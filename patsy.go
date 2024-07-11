@@ -12,8 +12,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dave/patsy/vos"
 	"github.com/pkg/errors"
+
+	"github.com/ZxillyFork/patsy/vos"
 )
 
 // Name returns the package name for a given path and src dir. Note that
@@ -81,7 +82,7 @@ func Dirs(env vos.Env, packagePath string) (map[string]string, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	exe := exec.Command("go", "list", "-f", "{{.ImportPath}}:{{.Dir}}", packagePath)
+	exe := exec.Command("go", "list", "-f", "{{.ImportPath}}@!at@!{{.Dir}}", packagePath)
 	exe.Dir = wd
 	exe.Env = env.Environ()
 	out, err := exe.CombinedOutput()
@@ -98,7 +99,7 @@ func Dirs(env vos.Env, packagePath string) (map[string]string, error) {
 			continue
 		}
 
-		chunks := strings.Split(strings.TrimSpace(line), ":")
+		chunks := strings.Split(strings.TrimSpace(line), "@!at@!")
 		importPath := chunks[0]
 		dir := chunks[1]
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dave/patsy/vos"
+	"github.com/ZxillyFork/patsy/vos"
 	"github.com/pkg/errors"
 )
 
@@ -29,7 +29,7 @@ func NewCache(env vos.Env) *Cache {
 // depending on the cwdir results can vary, so we include the directory in the cache keys
 type keyWithDir struct {
 	key string
-	dir  string
+	dir string
 }
 
 // Cache supports patsy.Dir and patsy.Path, but cached so they can be used in
@@ -112,7 +112,8 @@ func (c *Cache) Dirs(ppath string) (map[string]string, error) {
 }
 
 // GoName converts a full filepath to a package path and filename:
-//     /Users/dave/go/src/github.com/dave/foo.go -> github.com/dave/foo.go
+//
+//	/Users/dave/go/src/github.com/dave/foo.go -> github.com/dave/foo.go
 func (c *Cache) GoName(fpath string) (string, error) {
 	fdir, fname := filepath.Split(fpath)
 	ppath, err := c.Path(fdir)
@@ -123,7 +124,8 @@ func (c *Cache) GoName(fpath string) (string, error) {
 }
 
 // FilePath converts a package path and filename to a full filepath:
-//     github.com/dave/foo.go -> /Users/dave/go/src/github.com/dave/foo.go
+//
+//	github.com/dave/foo.go -> /Users/dave/go/src/github.com/dave/foo.go
 func (c *Cache) FilePath(gpath string) (string, error) {
 	ppath, fname := path.Split(gpath)
 	ppath = strings.TrimSuffix(ppath, "/")

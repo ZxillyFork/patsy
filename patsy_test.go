@@ -7,9 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dave/patsy"
-	"github.com/dave/patsy/builder"
-	"github.com/dave/patsy/vos"
+	"github.com/ZxillyFork/patsy/builder"
+	"github.com/ZxillyFork/patsy/vos"
+
+	"github.com/ZxillyFork/patsy"
 )
 
 func TestName2(t *testing.T) {

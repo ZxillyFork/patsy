@@ -4,14 +4,14 @@ package builder
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/dave/patsy/vos"
 	"github.com/pkg/errors"
+
+	"github.com/ZxillyFork/patsy/vos"
 )
 
 // New creates a new temporary location, either for a go module or for a gopath root.
@@ -30,7 +30,7 @@ func New(env vos.Env, namespace string, gomod bool) (*Builder, error) {
 // existing gopath, so existing imports will still work.
 // Remember to defer the Cleanup() method to delete the temporary files.
 func NewGoRoot(env vos.Env, namespace string) (*Builder, error) {
-	gopath, err := ioutil.TempDir("", "go")
+	gopath, err := os.MkdirTemp("", "go")
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating temporary gopath root dir")
 	}
@@ -81,7 +81,7 @@ func NewGoRoot(env vos.Env, namespace string) (*Builder, error) {
 // NewGoModule creates a new go module root in the system temporary location, creates the root dir
 // and the go.mod file. Remember to defer the Cleanup() method to delete the temporary files.
 func NewGoModule(env vos.Env, namespace string) (*Builder, error) {
-	root, err := ioutil.TempDir("", "go")
+	root, err := os.MkdirTemp("", "go")
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating temporary gopath root dir")
 	}
@@ -106,7 +106,7 @@ func NewGoModule(env vos.Env, namespace string) (*Builder, error) {
 	}
 
 	gomodFile := fmt.Sprintf("module %s", namespace)
-	err = ioutil.WriteFile(
+	err = os.WriteFile(
 		filepath.Join(root, "go.mod"), []byte(gomodFile), os.FileMode(0666))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating temporary go.mod file")
@@ -142,7 +142,7 @@ func (b *Builder) File(packageName, filename, contents string) error {
 		// tabs, so we convert to spaces for yaml files.
 		contents = strings.Replace(contents, "\t", "    ", -1)
 	}
-	if err := ioutil.WriteFile(filepath.Join(dir, filename), []byte(contents), 0777); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, filename), []byte(contents), 0777); err != nil {
 		return errors.Wrapf(err, "Error creating temporary source file %s", filename)
 	}
 	return nil
